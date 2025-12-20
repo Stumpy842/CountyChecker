@@ -1,0 +1,9 @@
+Open your data file in RootsMagic. Go to Publish, CountyCheck. Make your selections under Settings. For best results, check Show counties that didn't exist at the time of the event. Color coding, preparer info and header and footer settings do not matter.
+
+Click Generate Report. Click the disk icon at the top to save the report. Untick the box labeled View this file after it is saved. Choose Comma-separated Values (.csv). Save the file and make note of the filename.
+
+Return to |title| and open the saved file. Press the Start button. The file will be processed and saved automatically. Some statistics from the file will be shown in the top right part of the |title| window.
+
+Explore the program settings (under File-> Settings) for the best experience. You should set the default folder for reports to your RootsMagic Reports folder. Otherwise the program defaults to your Documents folder. Several other settings are available, including automatically viewing the report file after saving.
+
+Have fun and I hope you enjoy using |title|!
