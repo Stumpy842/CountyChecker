@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Drawing.Text;
 
 namespace CountyChecker
 {
@@ -37,15 +38,17 @@ namespace CountyChecker
         private long errors;
         private long suggestions;
         private long sugsout;
+        private long ignored;
         private long matches;
         private readonly List<string> ar = [];
+        private readonly List<string> rec = [];
         private readonly char dq = '"';
         private readonly string sug = "Suggestion:";
         private readonly string error = "Error:";
         private readonly string match = "Match:";
         private bool badFile;
         // Match a line starting and ending with double quotes, and optionally ending commas
-        private readonly string pat = "^\".*\",*$";
+        private readonly string rddq = "^\".*\",*$";
         private readonly string com2 = "^,,";
         private readonly string nl = Environment.NewLine;
         private readonly Stopwatch stopwatch = new();
@@ -63,7 +66,11 @@ namespace CountyChecker
         private bool optDeleteOnCancel;
         private bool optNoPromptOverwrite;
         private bool optOmitMatch;
-        
+
+        // Ignore List
+        private static List<string> IgnoreListItems = [];
+        internal static bool optIgnoreEnabled;
+
         public Form1()
         {
             InitializeComponent();
@@ -79,6 +86,9 @@ namespace CountyChecker
             btOpenFile.Enabled = true;
             aboutCountyCheckerToolStripMenuItem.Text = $"&About {AppName}";
             LoadSettings();
+            LoadIgnoreList();
+            ColorLabels();
+
         }
 
         private void LoadSettings()
@@ -96,6 +106,54 @@ namespace CountyChecker
             optSugsNUD = Settings.CurrentSettings.SugsNUD;
             optNoPromptOverwrite = Settings.CurrentSettings.NoPromptOverwrite;
             optOmitMatch = Settings.CurrentSettings.OmitMatch;
+        }
+
+        private void LoadIgnoreList()
+        {
+            IgnoreList.Load();
+            IgnoreListItems = IgnoreList.CurrentIgnores.Ignore;
+            optIgnoreEnabled = IgnoreList.CurrentIgnores.IgnoreEnabled;
+            disableIgnoreListToolStripMenuItem.Text = optIgnoreEnabled ? "&Disable Ignore List" : "&Enable Ignore List";
+        }
+
+        private void ColorLabels()
+        {
+            switch (optSugsLevel)
+            {
+                case Settings.SugsLevel.None:
+                    lbSuggsestions.ForeColor = Color.Red;
+                    lbSugsDesc.ForeColor = Color.Red;
+                    break;
+                case Settings.SugsLevel.Num:
+                    lbSuggsestions.ForeColor = Color.Purple;
+                    lbSugsDesc.ForeColor = Color.Purple;
+                    break;
+                case Settings.SugsLevel.All:
+                    lbSuggsestions.ForeColor = SystemColors.ControlText;
+                    lbSugsDesc.ForeColor = SystemColors.ControlText;
+                    break;
+            }
+            if (optOmitMatch)
+            {
+                lbMatches.ForeColor = Color.Red;
+                lbMatchesDesc.ForeColor = Color.Red;
+            }
+            else
+            {
+                lbMatches.ForeColor = SystemColors.ControlText;
+                lbMatchesDesc.ForeColor = SystemColors.ControlText;
+            }
+            if (optIgnoreEnabled)
+            {
+                lbIgnored.ForeColor = SystemColors.ControlText;
+                lbIgnoredDesc.ForeColor = SystemColors.ControlText;
+            }
+            else
+            {
+                lbIgnored.ForeColor = Color.Red;
+                lbIgnoredDesc.ForeColor = Color.Red; ;
+            }
+
         }
 
         private void btOpenFile_Click(object sender, EventArgs e)
@@ -179,7 +237,7 @@ namespace CountyChecker
             {
                 if (!getOutFile(inFile, ref outFile))
                 {
-                   ShowError($"Cannot get output filename from {inFile}");
+                    ShowError($"Cannot get output filename from {inFile}");
                     return;
                 }
 
@@ -193,7 +251,7 @@ namespace CountyChecker
                         {
                             Tools.TimedMessage("Cancelled", "", this, MessageBoxIcon.Asterisk);
                             return;
-                        } 
+                        }
                     }
                 }
                 catch (Exception e)
@@ -204,7 +262,7 @@ namespace CountyChecker
 
                 lbOutFile.Text = outFile;
                 lbCount.Text = count.ToString();
-                tbRec.Text = string.Empty;   
+                tbRec.Text = string.Empty;
                 if (!backgroundWorker1.IsBusy)
                 {
                     backgroundWorker1.RunWorkerAsync();
@@ -314,6 +372,19 @@ namespace CountyChecker
         /// <param name="e"></param>
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            static bool IgnoreFound(string line)
+            {
+                if (!optIgnoreEnabled) return false;
+                foreach (string ign in IgnoreListItems)
+                {
+                    if (line.Contains(ign))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             BackgroundWorker? worker = sender as BackgroundWorker;
             // Now process inFile
             try
@@ -329,9 +400,7 @@ namespace CountyChecker
                 // and a default FileShare.Read mode, allowing other processes to read simultaneously.
                 using StreamReader reader = new(File.OpenRead(inFile));
                 using StreamWriter writer = new(File.OpenWrite(outFile));
-                lbSuggsestions.ForeColor = optSugsLevel == Settings.SugsLevel.None ? Color.Red :
-                    optSugsLevel == Settings.SugsLevel.Num ? Color.Purple : SystemColors.ControlText;
-                lbMatches.ForeColor = optOmitMatch ? Color.Red : SystemColors.ControlText;
+
                 badFile = false;
                 progress = 0;
                 int chunk = 0;
@@ -340,11 +409,14 @@ namespace CountyChecker
                 linesout = 0;
                 matches = 0;
                 errors = 0;
-                suggestions = 0;
-                sugsout = 0;
-                int el = 0;
-                bool soe = false; // Suggestion or Error
+                suggestions = 0; // Suggestions found
+                sugsout = 0; // Suggestions output
+                ignored = 0; // Ignored lines
+                int el = 0; // Index into ar[]
+                int soe = 0; // Suggestion or Error
+                rec.Clear();
                 stopwatch.Start();
+
                 while (progress <= count)
                 {
                     if (worker!.CancellationPending)
@@ -354,13 +426,16 @@ namespace CountyChecker
                         e.Cancel = true; break;
                     }
 
+                    // Read a line from the input file
                     ar.Insert(el, reader.ReadLine()!);
 
                     // Check for first line
                     if (progress == 0)
                     {
-                        if (!Regex.IsMatch(ar[el], pat))
+                        // Does line start and end with double quotes?
+                        if (!Regex.IsMatch(ar[el], rddq))
                         {
+                            // No, quit with error
                             reader.Close();
                             writer.Close();
                             badFile = true; e.Cancel = true; break;
@@ -369,11 +444,16 @@ namespace CountyChecker
                     }
                     else
                     {
+                        // Is line starting a new record?
                         if ((ar[el] is null) || (ar[el].StartsWith(dq)))
                         {
-                            if (soe)
+                            // Yes, process previous record
+                            if (soe > 0)
                             {
-                                writer.WriteLine(ar[0]);
+                                // Suggestion or Error found in record
+                                // Write first line (name line)
+                                //writer.WriteLine(ar[0]);
+                                rec.Add(ar[0]);
                                 linesout++;
                                 int i;
                                 int c = 1;
@@ -388,34 +468,56 @@ namespace CountyChecker
 
                                     if (ar[c].Contains(sug))
                                     {
-                                        if (k > 0) { writer.WriteLine(ar[c - 1]); k = 0; linesout++; }
+                                        // Line is a Suggestion
+                                        //if (k > 0) { writer.WriteLine(ar[c - 1]); k = 0; linesout++; }
+                                        if (k > 0) { rec.Add(ar[c - 1]); k = 0; linesout++; }
                                         switch (optSugsLevel)
                                         {
-                                            case Settings.SugsLevel.All: { writer.WriteLine(ar[c]); sugsout++; linesout++; break; }
+                                            //case Settings.SugsLevel.All: { writer.WriteLine(ar[c]); sugsout++; linesout++; break; }
+                                            case Settings.SugsLevel.All: { rec.Add(ar[c]); sugsout++; linesout++; break; }
                                             case Settings.SugsLevel.Num:
                                                 {
-                                                    if (spr < optSugsNUD) { writer.WriteLine(ar[c]); sugsout++; linesout++; spr++; }
+                                                    //if (spr < optSugsNUD) { writer.WriteLine(ar[c]); sugsout++; linesout++; spr++; }
+                                                    if (spr < optSugsNUD) { rec.Add(ar[c]); sugsout++; linesout++; spr++; }
                                                     break;
                                                 }
+                                                // case Settings.SugsLevel.None: do nothing
                                         }
                                         c++;
                                     }
                                     else
                                     {
+                                        // Not a Suggestion line
                                         spr = 0;
                                         if (!Regex.IsMatch(ar[c], com2))
-                                        { k++; c++; }
+                                        {
+                                            // Does not start with ',,'
+                                            if (ar[c] == "") // Marked to Ignore if true
+                                            {
+                                                // Ignore up until next line not starting with ',,'
+                                                c++; ignored++; soe--; // Skip this line
+                                                // Skip ahead until line not starting with ',,'
+                                                while (Regex.IsMatch(ar[c], com2)) { c++; ignored++; soe--; }
+                                            }
+                                            else
+                                            {
+                                                k++; c++;
+                                            }
+                                        }
                                         else
                                         {
+                                            // Line starts with ',,'
                                             mf = ar[c].Contains(match);
                                             if (mf) { matches++; }
                                             for (i = c - k; i <= c; i++)
                                             {
                                                 if (mf)
                                                 {
-                                                    if (!optOmitMatch) { writer.WriteLine(ar[i]); linesout++; }
+                                                    //if (!optOmitMatch) { writer.WriteLine(ar[i]); linesout++; }
+                                                    if (!optOmitMatch) { rec.Add(ar[i]); linesout++; }
                                                 }
-                                                else { writer.WriteLine(ar[i]); linesout++; }
+                                                //else { writer.WriteLine(ar[i]); linesout++; }
+                                                else { rec.Add(ar[i]); linesout++; }
                                             }
                                             c += k > 0 ? k : 1;
                                             k = 0;
@@ -424,8 +526,14 @@ namespace CountyChecker
                                     }
                                 }
 
+                                // Write out accumulated record lines
+                                if (rec.Count > 1)
+                                {
+                                    foreach (string s in rec) { writer.WriteLine(s); }
+                                }                    
+                                rec.Clear();
                                 recsout++;
-                                soe = false;
+                                soe = 0;
                             }
                             records++;
                             ar[0] = ar[el];
@@ -433,8 +541,16 @@ namespace CountyChecker
                         }
                         else
                         {
-                            if (ar[el].Contains(sug)) { suggestions++; soe = true; }
-                            if (ar[el].Contains(error)) { errors++; soe = true; }
+                            // Continue accumulating lines for current record
+                            if (IgnoreFound(ar[el]))
+                            {
+                                ar[el] = string.Empty;
+                            }
+                            else
+                            {
+                                if (ar[el].Contains(sug)) { suggestions++; soe++; }
+                                if (ar[el].Contains(error)) { errors++; soe++; }
+                            }
                             el++;
                         }
                     }
@@ -456,7 +572,7 @@ namespace CountyChecker
 
             catch (FileNotFoundException ex)
             {
-                MessageBox.Show($"The file {inFile} was not found{nl}{ex.Message}");
+                ShowError($"The file {inFile} was not found{nl}{ex.Message}");
             }
             catch (IOException ex)
             {
@@ -482,6 +598,7 @@ namespace CountyChecker
             lbRecsOut.Text = recsout.ToString();
             lbLinesOut.Text = linesout.ToString();
             lbMatches.Text = matches.ToString();
+            lbIgnored.Text = ignored.ToString();
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -496,6 +613,7 @@ namespace CountyChecker
             lbRecsOut.Text = recsout.ToString();
             lbLinesOut.Text = linesout.ToString();
             lbMatches.Text = matches.ToString();
+            lbIgnored.Text = ignored.ToString();
 
             if (badFile)
             {
@@ -663,12 +781,35 @@ namespace CountyChecker
             {
                 LoadSettings();
                 lbOutFile.Text = "";
+                ColorLabels();
             }
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowSettingsWindow();
+        }
+
+        /*        private void ignoreListToolStripMenuItem_Click(object sender, EventArgs e)
+                {
+                }
+        */
+        private void editIgnoreListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using IgnoreListWindow ignoreList = new() { KeyPreview = true };
+            if (ignoreList.ShowDialog(this) == DialogResult.OK)
+            {
+                LoadIgnoreList();
+            }
+        }
+
+        private void disableIgnoreListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            optIgnoreEnabled = !optIgnoreEnabled;
+            disableIgnoreListToolStripMenuItem.Text = optIgnoreEnabled ? "&Disable Ignore List" : "&Enable Ignore List";
+            IgnoreList.CurrentIgnores.IgnoreEnabled = optIgnoreEnabled;
+            IgnoreList.Save(false);
+            ColorLabels();
         }
     }
 }

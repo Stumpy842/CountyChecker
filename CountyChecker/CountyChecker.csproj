@@ -9,6 +9,14 @@
     <ApplicationIcon>CC.ico</ApplicationIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>CountyChecker Report Generator</Description>
+    <PackageProjectUrl>https://github.com/Stumpy842/CountyChecker</PackageProjectUrl>
+    <PackageIcon>CC.png</PackageIcon>
+    <RepositoryUrl>https://github.com/Stumpy842/CountyChecker</RepositoryUrl>
+    <PackageTags>CountyCheck</PackageTags>
+    <PackageReleaseNotes>Added Ignore List</PackageReleaseNotes>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,6 +59,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CC.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

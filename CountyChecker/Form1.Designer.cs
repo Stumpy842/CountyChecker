@@ -58,7 +58,7 @@ namespace CountyChecker
             lbProgress = new Label();
             label5 = new Label();
             lbCount = new Label();
-            label6 = new Label();
+            lbSugsDesc = new Label();
             label7 = new Label();
             lbSuggsestions = new Label();
             lbErrors = new Label();
@@ -69,6 +69,9 @@ namespace CountyChecker
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             openToolStripMenuItem = new ToolStripMenuItem();
+            ignoreListToolStripMenuItem = new ToolStripMenuItem();
+            editIgnoreListToolStripMenuItem = new ToolStripMenuItem();
+            disableIgnoreListToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
@@ -76,11 +79,13 @@ namespace CountyChecker
             aboutCountyCheckerToolStripMenuItem = new ToolStripMenuItem();
             label9 = new Label();
             lbLinesOut = new Label();
-            label2 = new Label();
+            lbMatchesDesc = new Label();
             label10 = new Label();
             lbMatches = new Label();
             lbTime = new Label();
             pictureBox1 = new PictureBox();
+            lbIgnoredDesc = new Label();
+            lbIgnored = new Label();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -202,14 +207,14 @@ namespace CountyChecker
             lbCount.Size = new Size(64, 15);
             lbCount.TabIndex = 9;
             // 
-            // label6
+            // lbSugsDesc
             // 
-            label6.AutoSize = true;
-            label6.Location = new Point(612, 160);
-            label6.Name = "label6";
-            label6.Size = new Size(71, 15);
-            label6.TabIndex = 14;
-            label6.Text = "Suggestions";
+            lbSugsDesc.AutoSize = true;
+            lbSugsDesc.Location = new Point(612, 160);
+            lbSugsDesc.Name = "lbSugsDesc";
+            lbSugsDesc.Size = new Size(71, 15);
+            lbSugsDesc.TabIndex = 14;
+            lbSugsDesc.Text = "Suggestions";
             // 
             // label7
             // 
@@ -285,7 +290,7 @@ namespace CountyChecker
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, settingsToolStripMenuItem, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, ignoreListToolStripMenuItem, settingsToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "&File";
@@ -293,21 +298,42 @@ namespace CountyChecker
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(116, 22);
+            openToolStripMenuItem.Size = new Size(129, 22);
             openToolStripMenuItem.Text = "&Open";
             openToolStripMenuItem.Click += btOpenFile_Click;
+            // 
+            // ignoreListToolStripMenuItem
+            // 
+            ignoreListToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { editIgnoreListToolStripMenuItem, disableIgnoreListToolStripMenuItem });
+            ignoreListToolStripMenuItem.Name = "ignoreListToolStripMenuItem";
+            ignoreListToolStripMenuItem.Size = new Size(129, 22);
+            ignoreListToolStripMenuItem.Text = "&Ignore List";
+            // 
+            // editIgnoreListToolStripMenuItem
+            // 
+            editIgnoreListToolStripMenuItem.Name = "editIgnoreListToolStripMenuItem";
+            editIgnoreListToolStripMenuItem.Size = new Size(170, 22);
+            editIgnoreListToolStripMenuItem.Text = "&Edit Ignore List";
+            editIgnoreListToolStripMenuItem.Click += editIgnoreListToolStripMenuItem_Click;
+            // 
+            // disableIgnoreListToolStripMenuItem
+            // 
+            disableIgnoreListToolStripMenuItem.Name = "disableIgnoreListToolStripMenuItem";
+            disableIgnoreListToolStripMenuItem.Size = new Size(170, 22);
+            disableIgnoreListToolStripMenuItem.Text = "&Disable Ignore List";
+            disableIgnoreListToolStripMenuItem.Click += disableIgnoreListToolStripMenuItem_Click;
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(116, 22);
+            settingsToolStripMenuItem.Size = new Size(129, 22);
             settingsToolStripMenuItem.Text = "&Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(116, 22);
+            exitToolStripMenuItem.Size = new Size(129, 22);
             exitToolStripMenuItem.Text = "E&xit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -350,19 +376,19 @@ namespace CountyChecker
             lbLinesOut.Size = new Size(64, 15);
             lbLinesOut.TabIndex = 19;
             // 
-            // label2
+            // lbMatchesDesc
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(612, 120);
-            label2.Name = "label2";
-            label2.Size = new Size(52, 15);
-            label2.TabIndex = 21;
-            label2.Text = "Matches";
+            lbMatchesDesc.AutoSize = true;
+            lbMatchesDesc.Location = new Point(612, 120);
+            lbMatchesDesc.Name = "lbMatchesDesc";
+            lbMatchesDesc.Size = new Size(52, 15);
+            lbMatchesDesc.TabIndex = 21;
+            lbMatchesDesc.Text = "Matches";
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(612, 180);
+            label10.Location = new Point(332, 180);
             label10.Name = "label10";
             label10.Size = new Size(34, 15);
             label10.TabIndex = 22;
@@ -378,7 +404,7 @@ namespace CountyChecker
             // lbTime
             // 
             lbTime.AutoEllipsis = true;
-            lbTime.Location = new Point(686, 180);
+            lbTime.Location = new Point(372, 180);
             lbTime.Name = "lbTime";
             lbTime.Size = new Size(102, 15);
             lbTime.TabIndex = 24;
@@ -395,6 +421,24 @@ namespace CountyChecker
             pictureBox1.TabIndex = 25;
             pictureBox1.TabStop = false;
             // 
+            // lbIgnoredDesc
+            // 
+            lbIgnoredDesc.AutoSize = true;
+            lbIgnoredDesc.Location = new Point(612, 180);
+            lbIgnoredDesc.Name = "lbIgnoredDesc";
+            lbIgnoredDesc.Size = new Size(48, 15);
+            lbIgnoredDesc.TabIndex = 14;
+            lbIgnoredDesc.Text = "Ignored";
+            // 
+            // lbIgnored
+            // 
+            lbIgnored.AutoEllipsis = true;
+            lbIgnored.BackColor = SystemColors.Control;
+            lbIgnored.Location = new Point(686, 180);
+            lbIgnored.Name = "lbIgnored";
+            lbIgnored.Size = new Size(102, 15);
+            lbIgnored.TabIndex = 15;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -404,11 +448,12 @@ namespace CountyChecker
             Controls.Add(lbTime);
             Controls.Add(lbMatches);
             Controls.Add(label10);
-            Controls.Add(label2);
+            Controls.Add(lbMatchesDesc);
             Controls.Add(label4);
             Controls.Add(lbErrors);
             Controls.Add(lbLinesOut);
             Controls.Add(lbRecsOut);
+            Controls.Add(lbIgnored);
             Controls.Add(lbSuggsestions);
             Controls.Add(lbCount);
             Controls.Add(lbRecords);
@@ -417,7 +462,8 @@ namespace CountyChecker
             Controls.Add(label9);
             Controls.Add(label5);
             Controls.Add(label8);
-            Controls.Add(label6);
+            Controls.Add(lbIgnoredDesc);
+            Controls.Add(lbSugsDesc);
             Controls.Add(tbRec);
             Controls.Add(lbOutFile);
             Controls.Add(lbInFile);
@@ -454,7 +500,7 @@ namespace CountyChecker
         private Button btCancel;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Label label5;
-        private Label label6;
+        private Label lbSugsDesc;
         private Label label7;
         private Label label4;
         private Label label8;
@@ -474,10 +520,15 @@ namespace CountyChecker
         internal Label lbErrors;
         private Label label9;
         internal Label lbLinesOut;
-        private Label label2;
+        private Label lbMatchesDesc;
         private Label label10;
         internal Label lbMatches;
         internal Label lbTime;
         private PictureBox pictureBox1;
+        private ToolStripMenuItem ignoreListToolStripMenuItem;
+        private Label lbIgnoredDesc;
+        internal Label lbIgnored;
+        private ToolStripMenuItem editIgnoreListToolStripMenuItem;
+        private ToolStripMenuItem disableIgnoreListToolStripMenuItem;
     }
 }

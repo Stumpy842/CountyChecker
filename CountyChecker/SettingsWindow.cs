@@ -41,7 +41,7 @@ namespace CountyChecker
             }
         }
 
-        private bool GetFolder(string desc, ref string path, bool rep = true)
+        private static bool GetFolder(string desc, ref string path, bool rep = true)
         {
             path = rep ? Settings.CurrentSettings.ReportsPath : Settings.CurrentSettings.OutputPath;
             if (!Directory.Exists(path)) { path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); }
@@ -107,8 +107,8 @@ namespace CountyChecker
             nudSugs.Enabled = rbSugsNum.Checked;
         }
 
-        string i = "InputFilename";
-        string e = ".csv";
+        readonly string i = "InputFilename";
+        readonly string e = ".csv";
         private void tbName_TextChanged(object sender, EventArgs ea)
         {
             string n = tbName.Text;

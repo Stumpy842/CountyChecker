@@ -30,7 +30,7 @@ namespace CountyChecker
 
         private static readonly string title = Form1.AppName;
         private static SettingsWindow? _settingsWindow = null;
-        public static SettingsData CurrentSettings { get; private set; } = new SettingsData();
+        public static SettingsData CurrentSettings { get; private set; } = new();
         public enum PAF { Prepend, Append, Fixed}
         public enum SugsLevel { All, Num, None }
 
@@ -96,7 +96,7 @@ namespace CountyChecker
                 if (_settingsWindow is not null)
                 {
                     Tools.ShowTaskDlg(null!, title, "Settings File Error", "There was an error loading or creating the Settings",
-                        ex.ToString());
+                        ex.Message);
                 }
                 //Debug.WriteLine($"***{ex}");
             }
