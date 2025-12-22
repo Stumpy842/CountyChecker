@@ -14,9 +14,14 @@
     <PackageIcon>CC.png</PackageIcon>
     <RepositoryUrl>https://github.com/Stumpy842/CountyChecker</RepositoryUrl>
     <PackageTags>CountyCheck</PackageTags>
-    <PackageReleaseNotes>Added Ignore List</PackageReleaseNotes>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <PackageReleaseNotes>Added Hotkeys</PackageReleaseNotes>
+    <Version>1.0.2</Version>
+    <VersionPrefix>1.0.2</VersionPrefix>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
+    <InformationalVersion>1.0.2</InformationalVersion>
+    <Title>CountyChecker Report Generator</Title>
+    <Copyright>© Steven J. Stover, 2025</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

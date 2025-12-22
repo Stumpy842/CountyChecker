@@ -14,6 +14,11 @@ Create and save a csv CountyCheck report with RootsMagic. Start CountyChecker an
 
 Located under the File menu, allows to create a list of items to be ignored if found in a Place name.
 
+********** New Version 1.0.2.0 Release **********
+Added Hotkeys (accelerator keys)
+Delete output file on Cancel works now
+Minor corrections to UI (spelling etc)
+
 **Notes**
 
 CountyChecker is a Windows application which requires the .NET runtime and will not run natively on other platforms such as Mac OS or Linux. It may work with some crossover/emulator solution but this has not been tested.

@@ -117,7 +117,7 @@ namespace CountyChecker
             btGO.Name = "btGO";
             btGO.Size = new Size(75, 53);
             btGO.TabIndex = 4;
-            btGO.Text = "Start";
+            btGO.Text = "&Start";
             toolTip1.SetToolTip(btGO, "Process file");
             btGO.UseVisualStyleBackColor = true;
             btGO.Click += ProcessFile;
@@ -128,7 +128,7 @@ namespace CountyChecker
             btCancel.Name = "btCancel";
             btCancel.Size = new Size(75, 53);
             btCancel.TabIndex = 5;
-            btCancel.Text = "Cancel";
+            btCancel.Text = "&Cancel";
             toolTip1.SetToolTip(btCancel, "Cancel process");
             btCancel.UseVisualStyleBackColor = true;
             btCancel.Click += CancelProcess;

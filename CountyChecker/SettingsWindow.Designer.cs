@@ -55,12 +55,12 @@ namespace CountyChecker
             cbDeleteOnCancel = new CheckBox();
             cbViewOutput = new CheckBox();
             cbOmitMatch = new CheckBox();
+            tbOutputPath = new TextBox();
             gbNaming = new GroupBox();
             rbFixed = new RadioButton();
             rbAppend = new RadioButton();
             rbPrepend = new RadioButton();
             gbReportOptions = new GroupBox();
-            label2 = new Label();
             nudSugs = new NumericUpDown();
             rbSugsNone = new RadioButton();
             rbSugsNum = new RadioButton();
@@ -68,7 +68,6 @@ namespace CountyChecker
             btSave = new Button();
             btCancel = new Button();
             label3 = new Label();
-            tbOutputPath = new TextBox();
             btOutputFolder = new Button();
             cbOutUseRepFolder = new CheckBox();
             gbNaming.SuspendLayout();
@@ -112,7 +111,7 @@ namespace CountyChecker
             cbAutoName.Name = "cbAutoName";
             cbAutoName.Size = new Size(143, 19);
             cbAutoName.TabIndex = 4;
-            cbAutoName.Text = "Auto name output file";
+            cbAutoName.Text = "Auto &name output file";
             toolTip1.SetToolTip(cbAutoName, "If checked, the ouput file wil be auto named using the entries in Naming Style");
             cbAutoName.UseVisualStyleBackColor = true;
             // 
@@ -132,7 +131,7 @@ namespace CountyChecker
             cbPromptOverwrite.Name = "cbPromptOverwrite";
             cbPromptOverwrite.Size = new Size(233, 19);
             cbPromptOverwrite.TabIndex = 5;
-            cbPromptOverwrite.Text = "Do not prompt to overwrite existing file";
+            cbPromptOverwrite.Text = "Do not prompt to overwrite e&xisting file";
             toolTip1.SetToolTip(cbPromptOverwrite, "If checked, will overwrite an existing file with the same name without warning");
             cbPromptOverwrite.UseVisualStyleBackColor = true;
             // 
@@ -142,8 +141,8 @@ namespace CountyChecker
             cbDeleteOnCancel.Location = new Point(230, 22);
             cbDeleteOnCancel.Name = "cbDeleteOnCancel";
             cbDeleteOnCancel.Size = new Size(173, 19);
-            cbDeleteOnCancel.TabIndex = 1;
-            cbDeleteOnCancel.Text = "Delete output file on Cancel";
+            cbDeleteOnCancel.TabIndex = 4;
+            cbDeleteOnCancel.Text = "Delete &output file on Cancel";
             toolTip1.SetToolTip(cbDeleteOnCancel, "If checked, the output file will be deleted if you click the Cancel button");
             cbDeleteOnCancel.UseVisualStyleBackColor = true;
             // 
@@ -153,8 +152,8 @@ namespace CountyChecker
             cbViewOutput.Location = new Point(230, 52);
             cbViewOutput.Name = "cbViewOutput";
             cbViewOutput.Size = new Size(173, 19);
-            cbViewOutput.TabIndex = 3;
-            cbViewOutput.Text = "View output file after saving";
+            cbViewOutput.TabIndex = 5;
+            cbViewOutput.Text = "&View output file after saving";
             toolTip1.SetToolTip(cbViewOutput, "Open output file in default CSV file editor");
             cbViewOutput.UseVisualStyleBackColor = true;
             // 
@@ -164,10 +163,18 @@ namespace CountyChecker
             cbOmitMatch.Location = new Point(230, 82);
             cbOmitMatch.Name = "cbOmitMatch";
             cbOmitMatch.Size = new Size(201, 19);
-            cbOmitMatch.TabIndex = 2;
-            cbOmitMatch.Text = "Omit Events with matching Place";
+            cbOmitMatch.TabIndex = 6;
+            cbOmitMatch.Text = "Omit Events with &matching Place";
             toolTip1.SetToolTip(cbOmitMatch, "If checked, output will not contain lines which match a known place");
             cbOmitMatch.UseVisualStyleBackColor = true;
+            // 
+            // tbOutputPath
+            // 
+            tbOutputPath.Location = new Point(12, 100);
+            tbOutputPath.Name = "tbOutputPath";
+            tbOutputPath.Size = new Size(408, 23);
+            tbOutputPath.TabIndex = 5;
+            toolTip1.SetToolTip(tbOutputPath, "The path for your Output reports");
             // 
             // gbNaming
             // 
@@ -180,7 +187,7 @@ namespace CountyChecker
             gbNaming.Location = new Point(12, 138);
             gbNaming.Name = "gbNaming";
             gbNaming.Size = new Size(446, 106);
-            gbNaming.TabIndex = 3;
+            gbNaming.TabIndex = 7;
             gbNaming.TabStop = false;
             gbNaming.Text = "Output File Naming Style";
             // 
@@ -192,7 +199,7 @@ namespace CountyChecker
             rbFixed.Size = new Size(105, 19);
             rbFixed.TabIndex = 2;
             rbFixed.TabStop = true;
-            rbFixed.Text = "Use fixed name";
+            rbFixed.Text = "Use &fixed name";
             rbFixed.UseVisualStyleBackColor = true;
             // 
             // rbAppend
@@ -200,10 +207,10 @@ namespace CountyChecker
             rbAppend.AutoSize = true;
             rbAppend.Location = new Point(169, 22);
             rbAppend.Name = "rbAppend";
-            rbAppend.Size = new Size(149, 19);
+            rbAppend.Size = new Size(145, 19);
             rbAppend.TabIndex = 1;
             rbAppend.TabStop = true;
-            rbAppend.Text = "Append to intput name";
+            rbAppend.Text = "&Append to input name";
             rbAppend.UseVisualStyleBackColor = true;
             // 
             // rbPrepend
@@ -211,16 +218,15 @@ namespace CountyChecker
             rbPrepend.AutoSize = true;
             rbPrepend.Location = new Point(10, 22);
             rbPrepend.Name = "rbPrepend";
-            rbPrepend.Size = new Size(151, 19);
+            rbPrepend.Size = new Size(147, 19);
             rbPrepend.TabIndex = 0;
             rbPrepend.TabStop = true;
-            rbPrepend.Text = "Prepend to intput name";
+            rbPrepend.Text = "&Prepend to input name";
             rbPrepend.UseVisualStyleBackColor = true;
             // 
             // gbReportOptions
             // 
             gbReportOptions.Controls.Add(cbViewOutput);
-            gbReportOptions.Controls.Add(label2);
             gbReportOptions.Controls.Add(nudSugs);
             gbReportOptions.Controls.Add(cbOmitMatch);
             gbReportOptions.Controls.Add(rbSugsNone);
@@ -230,26 +236,17 @@ namespace CountyChecker
             gbReportOptions.Location = new Point(12, 256);
             gbReportOptions.Name = "gbReportOptions";
             gbReportOptions.Size = new Size(446, 113);
-            gbReportOptions.TabIndex = 4;
+            gbReportOptions.TabIndex = 8;
             gbReportOptions.TabStop = false;
             gbReportOptions.Text = "Report Options";
             // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(72, 52);
-            label2.Name = "label2";
-            label2.Size = new Size(123, 15);
-            label2.TabIndex = 6;
-            label2.Text = "Suggestions per Event";
-            // 
             // nudSugs
             // 
-            nudSugs.Location = new Point(30, 50);
+            nudSugs.Location = new Point(150, 50);
             nudSugs.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudSugs.Name = "nudSugs";
             nudSugs.Size = new Size(40, 23);
-            nudSugs.TabIndex = 5;
+            nudSugs.TabIndex = 2;
             nudSugs.TextAlign = HorizontalAlignment.Right;
             nudSugs.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
@@ -259,9 +256,9 @@ namespace CountyChecker
             rbSugsNone.Location = new Point(10, 82);
             rbSugsNone.Name = "rbSugsNone";
             rbSugsNone.Size = new Size(154, 19);
-            rbSugsNone.TabIndex = 4;
+            rbSugsNone.TabIndex = 3;
             rbSugsNone.TabStop = true;
-            rbSugsNone.Text = "Do not save Suggestions";
+            rbSugsNone.Text = "&Do not save Suggestions";
             rbSugsNone.UseVisualStyleBackColor = true;
             // 
             // rbSugsNum
@@ -269,10 +266,10 @@ namespace CountyChecker
             rbSugsNum.AutoSize = true;
             rbSugsNum.Location = new Point(10, 52);
             rbSugsNum.Name = "rbSugsNum";
-            rbSugsNum.Size = new Size(28, 19);
-            rbSugsNum.TabIndex = 4;
+            rbSugsNum.Size = new Size(141, 19);
+            rbSugsNum.TabIndex = 1;
             rbSugsNum.TabStop = true;
-            rbSugsNum.Text = " ";
+            rbSugsNum.Text = "Suggestions per &Event";
             rbSugsNum.UseVisualStyleBackColor = true;
             rbSugsNum.CheckedChanged += rbSugsNum_CheckedChanged;
             // 
@@ -282,9 +279,9 @@ namespace CountyChecker
             rbSugsAll.Location = new Point(10, 22);
             rbSugsAll.Name = "rbSugsAll";
             rbSugsAll.Size = new Size(131, 19);
-            rbSugsAll.TabIndex = 4;
+            rbSugsAll.TabIndex = 0;
             rbSugsAll.TabStop = true;
-            rbSugsAll.Text = "Save all Suggestions";
+            rbSugsAll.Text = "Save a&ll Suggestions";
             rbSugsAll.UseVisualStyleBackColor = true;
             // 
             // btSave
@@ -292,8 +289,8 @@ namespace CountyChecker
             btSave.Location = new Point(131, 386);
             btSave.Name = "btSave";
             btSave.Size = new Size(80, 40);
-            btSave.TabIndex = 5;
-            btSave.Text = "Save";
+            btSave.TabIndex = 9;
+            btSave.Text = "&Save";
             btSave.UseVisualStyleBackColor = true;
             btSave.Click += btSave_Click;
             // 
@@ -302,8 +299,8 @@ namespace CountyChecker
             btCancel.Location = new Point(262, 386);
             btCancel.Name = "btCancel";
             btCancel.Size = new Size(80, 40);
-            btCancel.TabIndex = 6;
-            btCancel.Text = "Cancel";
+            btCancel.TabIndex = 10;
+            btCancel.Text = "&Cancel";
             btCancel.UseVisualStyleBackColor = true;
             btCancel.Click += btCancel_Click;
             // 
@@ -313,16 +310,8 @@ namespace CountyChecker
             label3.Location = new Point(12, 79);
             label3.Name = "label3";
             label3.Size = new Size(81, 15);
-            label3.TabIndex = 7;
+            label3.TabIndex = 3;
             label3.Text = "Output Folder";
-            // 
-            // tbOutputPath
-            // 
-            tbOutputPath.Location = new Point(12, 100);
-            tbOutputPath.Name = "tbOutputPath";
-            tbOutputPath.Size = new Size(408, 23);
-            tbOutputPath.TabIndex = 8;
-            toolTip1.SetToolTip(tbOutputPath, "The path for your Output reports");
             // 
             // btOutputFolder
             // 
@@ -330,7 +319,7 @@ namespace CountyChecker
             btOutputFolder.Location = new Point(426, 98);
             btOutputFolder.Name = "btOutputFolder";
             btOutputFolder.Size = new Size(32, 28);
-            btOutputFolder.TabIndex = 2;
+            btOutputFolder.TabIndex = 6;
             btOutputFolder.Text = "...";
             btOutputFolder.UseVisualStyleBackColor = true;
             btOutputFolder.Click += btOutputFolder_Click;
@@ -341,8 +330,8 @@ namespace CountyChecker
             cbOutUseRepFolder.Location = new Point(125, 79);
             cbOutUseRepFolder.Name = "cbOutUseRepFolder";
             cbOutUseRepFolder.Size = new Size(124, 19);
-            cbOutUseRepFolder.TabIndex = 9;
-            cbOutUseRepFolder.Text = "Use Reports Folder";
+            cbOutUseRepFolder.TabIndex = 4;
+            cbOutUseRepFolder.Text = "Use &Reports Folder";
             cbOutUseRepFolder.UseVisualStyleBackColor = true;
             cbOutUseRepFolder.CheckedChanged += cbOutUseRepFolder_CheckedChanged;
             // 
@@ -399,7 +388,6 @@ namespace CountyChecker
         private Button btCancel;
         internal CheckBox cbOmitMatch;
         internal NumericUpDown nudSugs;
-        private Label label2;
         internal RadioButton rbSugsNone;
         internal RadioButton rbSugsNum;
         internal RadioButton rbSugsAll;

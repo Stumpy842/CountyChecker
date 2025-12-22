@@ -69,7 +69,7 @@ namespace CountyChecker
             btAdd.Name = "btAdd";
             btAdd.Size = new Size(113, 31);
             btAdd.TabIndex = 0;
-            btAdd.Text = "Add Line";
+            btAdd.Text = "Add &Line";
             btAdd.UseVisualStyleBackColor = true;
             btAdd.Click += btAdd_Click;
             // 
@@ -79,7 +79,7 @@ namespace CountyChecker
             btRemove.Name = "btRemove";
             btRemove.Size = new Size(113, 31);
             btRemove.TabIndex = 1;
-            btRemove.Text = "Remove Line(s)";
+            btRemove.Text = "&Remove Line(s)";
             btRemove.UseVisualStyleBackColor = true;
             btRemove.Click += btRemove_Click;
             // 
@@ -89,7 +89,7 @@ namespace CountyChecker
             btClearAll.Name = "btClearAll";
             btClearAll.Size = new Size(113, 31);
             btClearAll.TabIndex = 2;
-            btClearAll.Text = "Clear All";
+            btClearAll.Text = "Clear &All";
             btClearAll.UseVisualStyleBackColor = true;
             btClearAll.Click += btClearAll_Click;
             // 
@@ -99,7 +99,7 @@ namespace CountyChecker
             btSave.Name = "btSave";
             btSave.Size = new Size(113, 31);
             btSave.TabIndex = 3;
-            btSave.Text = "Save";
+            btSave.Text = "&Save";
             btSave.UseVisualStyleBackColor = true;
             btSave.Click += btSave_Click;
             // 
@@ -109,7 +109,7 @@ namespace CountyChecker
             btCancel.Name = "btCancel";
             btCancel.Size = new Size(113, 31);
             btCancel.TabIndex = 4;
-            btCancel.Text = "Cancel";
+            btCancel.Text = "&Cancel";
             btCancel.UseVisualStyleBackColor = true;
             btCancel.Click += btCancel_Click;
             // 
@@ -130,7 +130,7 @@ namespace CountyChecker
             btEdit.Name = "btEdit";
             btEdit.Size = new Size(113, 31);
             btEdit.TabIndex = 7;
-            btEdit.Text = "Edit Line";
+            btEdit.Text = "&Edit Line";
             btEdit.UseVisualStyleBackColor = true;
             btEdit.Click += btEdit_Click;
             // 

@@ -260,11 +260,10 @@ namespace CountyChecker
                     return;
                 }
 
-                lbOutFile.Text = outFile;
-                lbCount.Text = count.ToString();
-                tbRec.Text = string.Empty;
                 if (!backgroundWorker1.IsBusy)
                 {
+                    lbOutFile.Text = outFile;
+                    lbCount.Text = count.ToString();
                     backgroundWorker1.RunWorkerAsync();
                 }
             }
@@ -400,6 +399,7 @@ namespace CountyChecker
                 // and a default FileShare.Read mode, allowing other processes to read simultaneously.
                 using StreamReader reader = new(File.OpenRead(inFile));
                 using StreamWriter writer = new(File.OpenWrite(outFile));
+                tbRec.Text = string.Empty;
 
                 badFile = false;
                 progress = 0;
@@ -451,8 +451,7 @@ namespace CountyChecker
                             if (soe > 0)
                             {
                                 // Suggestion or Error found in record
-                                // Write first line (name line)
-                                //writer.WriteLine(ar[0]);
+                                // Save first line (name line)
                                 rec.Add(ar[0]);
                                 linesout++;
                                 int i;
@@ -469,15 +468,12 @@ namespace CountyChecker
                                     if (ar[c].Contains(sug))
                                     {
                                         // Line is a Suggestion
-                                        //if (k > 0) { writer.WriteLine(ar[c - 1]); k = 0; linesout++; }
                                         if (k > 0) { rec.Add(ar[c - 1]); k = 0; linesout++; }
                                         switch (optSugsLevel)
                                         {
-                                            //case Settings.SugsLevel.All: { writer.WriteLine(ar[c]); sugsout++; linesout++; break; }
                                             case Settings.SugsLevel.All: { rec.Add(ar[c]); sugsout++; linesout++; break; }
                                             case Settings.SugsLevel.Num:
                                                 {
-                                                    //if (spr < optSugsNUD) { writer.WriteLine(ar[c]); sugsout++; linesout++; spr++; }
                                                     if (spr < optSugsNUD) { rec.Add(ar[c]); sugsout++; linesout++; spr++; }
                                                     break;
                                                 }
@@ -513,10 +509,8 @@ namespace CountyChecker
                                             {
                                                 if (mf)
                                                 {
-                                                    //if (!optOmitMatch) { writer.WriteLine(ar[i]); linesout++; }
                                                     if (!optOmitMatch) { rec.Add(ar[i]); linesout++; }
                                                 }
-                                                //else { writer.WriteLine(ar[i]); linesout++; }
                                                 else { rec.Add(ar[i]); linesout++; }
                                             }
                                             c += k > 0 ? k : 1;
@@ -601,11 +595,47 @@ namespace CountyChecker
             lbIgnored.Text = ignored.ToString();
         }
 
+        private void ClearLabels() {
+            lbCount.Text = string.Empty;
+            lbSuggsestions.Text = string.Empty;
+            lbErrors.Text = string.Empty;
+            lbRecords.Text = string.Empty;
+            lbRecsOut.Text = string.Empty;
+            lbLinesOut.Text = string.Empty;
+            lbMatches.Text = string.Empty;
+            lbIgnored.Text = string.Empty;
+            lbTime.Text = string.Empty;
+        }
+
         private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             stopwatch.Stop(); DisplayTime();
             string ofd = optDeleteOnCancel ? ": Output file deleted" : "";
             lbProgress.Text = e.Cancelled ? $"Cancelled{ofd}" : e.Error != null ? "Error: " + e.Error.Message : "Done";
+            Reset();
+
+            if (badFile)
+            {
+                ClearLabels();
+                ShowError($"Invalid input file. First line should start{nl}and end with double quotes.");
+                lbOutFile.Text = string.Empty;
+                try { File.Delete(outFile); }
+                catch { }
+                return;
+            }
+
+            if (optDeleteOnCancel)
+            {
+                if (e.Cancelled && File.Exists(outFile))
+                {
+                    ClearLabels();
+                    lbOutFile.Text = string.Empty;
+                    try { File.Delete(outFile); }
+                    catch (Exception) { }
+                    return;
+                }
+            }
+
             lbSuggsestions.Text = $"{sugsout}/{suggestions}";
             toolTip1.SetToolTip(lbSuggsestions, $"{sugsout} of {suggestions}");
             lbErrors.Text = errors.ToString();
@@ -615,41 +645,31 @@ namespace CountyChecker
             lbMatches.Text = matches.ToString();
             lbIgnored.Text = ignored.ToString();
 
-            if (badFile)
-            {
-                ShowError($"Invalid input file. First line should start{nl}and end with double quotes.");
-                try
-                {
-                    lbOutFile.Text = string.Empty;
-                    File.Delete(outFile);
-                }
-                catch { }
-            }
-            else
+            if (File.Exists(outFile))
             {
                 try
                 {
-                    if (File.Exists(outFile))
+                    int n = 0;
+                    int v = GetVisibileLineCount(tbRec);
+                    string line;
+                    using StreamReader rdr = new(File.OpenRead(outFile));
+                    while ((line = rdr.ReadLine()!) != null)
                     {
-                        int n = 0;
-                        int v = GetVisibileLineCount(tbRec);
-                        string line;
-                        using StreamReader rdr = new(File.OpenRead(outFile));
-                        while ((line = rdr.ReadLine()!) != null)
-                        {
-                            n++;
-                            if (n > v) { break; }
-                            tbRec.AppendText(line + Environment.NewLine);
-                        }
-                        rdr.Close();
+                        n++;
+                        if (n > v) { break; }
+                        tbRec.AppendText($"{line}{ nl}");
                     }
-                    else { tbRec.Text = $"Cannot find {outFile}"; }
+                    rdr.Close();
                 }
                 catch (IOException) { tbRec.Text = $"Error reading {outFile}"; }
                 catch (OutOfMemoryException) { tbRec.Text = $"Error reading {outFile}"; }
             }
+            else
+            {
+                tbRec.Text = $"Cannot find {outFile}";
+                return;
+            }
 
-            Reset();
 
             // Code to view output file if optViewOutput is true
             if (optViewOutput && File.Exists(outFile))
@@ -660,7 +680,7 @@ namespace CountyChecker
                 }
                 catch (Exception ex)
                 {
-                    ShowError($@"Cannot start {outFile}{nl}{ex}");
+                    ShowError($@"Cannot start {outFile}{nl}{ex.Message}");
                 }
             }
 

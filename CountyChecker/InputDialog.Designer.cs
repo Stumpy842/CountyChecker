@@ -89,7 +89,7 @@ namespace DukeBlazeLauncher
             btCancel.Name = "btCancel";
             btCancel.Size = new Size(88, 27);
             btCancel.TabIndex = 3;
-            btCancel.Text = "Cancel";
+            btCancel.Text = "&Cancel";
             btCancel.UseVisualStyleBackColor = true;
             btCancel.Click += btCancel_Click;
             // 
