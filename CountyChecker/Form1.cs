@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace CountyChecker
 {
@@ -40,6 +41,15 @@ namespace CountyChecker
         private long sugsout;
         private long ignored;
         private long matches;
+        private int males;
+        private int females;
+        private int unknown;
+        private int malesout;
+        private int femalesout;
+        private int unknownout;
+        private int skipped;
+        private readonly string rmale = @"^.*\(M\)""$";
+        private readonly string rfemale = @"^.*\(F\)""$";
         private readonly List<string> ar = [];
         private readonly List<string> rec = [];
         private readonly char dq = '"';
@@ -262,6 +272,7 @@ namespace CountyChecker
 
                 if (!backgroundWorker1.IsBusy)
                 {
+                    tbRec.Text = string.Empty;
                     lbOutFile.Text = outFile;
                     lbCount.Text = count.ToString();
                     backgroundWorker1.RunWorkerAsync();
@@ -273,7 +284,7 @@ namespace CountyChecker
         /// </summary>
         /// <param name="inf"></param>
         /// <param name="outf"></param>
-        /// <returns></returns>
+        /// <returns>true if successful</returns>
         private bool getOutFile(string inf, ref string outf)
         {
 
@@ -399,7 +410,6 @@ namespace CountyChecker
                 // and a default FileShare.Read mode, allowing other processes to read simultaneously.
                 using StreamReader reader = new(File.OpenRead(inFile));
                 using StreamWriter writer = new(File.OpenWrite(outFile));
-                tbRec.Text = string.Empty;
 
                 badFile = false;
                 progress = 0;
@@ -409,6 +419,13 @@ namespace CountyChecker
                 linesout = 0;
                 matches = 0;
                 errors = 0;
+                males = 0;
+                females = 0;
+                unknown = 0;
+                skipped = 0;
+                malesout = 0;
+                femalesout = 0;
+                unknownout = 0;
                 suggestions = 0; // Suggestions found
                 sugsout = 0; // Suggestions output
                 ignored = 0; // Ignored lines
@@ -520,13 +537,18 @@ namespace CountyChecker
                                     }
                                 }
 
+                                TallySexes(rec[0], rec.Count > 1);
                                 // Write out accumulated record lines
                                 if (rec.Count > 1)
                                 {
                                     foreach (string s in rec) { writer.WriteLine(s); }
-                                }                    
+                                    recsout++;
+                                }
+                                else
+                                {
+                                    skipped++;
+                                }
                                 rec.Clear();
-                                recsout++;
                                 soe = 0;
                             }
                             records++;
@@ -582,6 +604,14 @@ namespace CountyChecker
             }
         }
 
+
+        private void TallySexes(string r, bool writing)
+        {
+            if (Regex.IsMatch(r, rmale)) { males++; if (writing) malesout++; }
+            else if (Regex.IsMatch(r, rfemale)) { females++; if (writing) femalesout++; }
+            else { unknown++; if (writing) unknownout++; }
+
+        }
         private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             lbProgress.Text = $"Progress: {e.ProgressPercentage}%";
@@ -589,7 +619,8 @@ namespace CountyChecker
             toolTip1.SetToolTip(lbSuggsestions, $"{sugsout} of {suggestions}");
             lbErrors.Text = errors.ToString();
             lbRecords.Text = records.ToString();
-            lbRecsOut.Text = recsout.ToString();
+            int ro = Decimal.ToInt32(recsout);
+            lbRecsOut.Text = $"{ro}/{ro + skipped}";
             lbLinesOut.Text = linesout.ToString();
             lbMatches.Text = matches.ToString();
             lbIgnored.Text = ignored.ToString();
@@ -640,7 +671,8 @@ namespace CountyChecker
             toolTip1.SetToolTip(lbSuggsestions, $"{sugsout} of {suggestions}");
             lbErrors.Text = errors.ToString();
             lbRecords.Text = records.ToString();
-            lbRecsOut.Text = recsout.ToString();
+            int ro = Decimal.ToInt32(recsout);
+            lbRecsOut.Text = $"{ro}/{ro + skipped}";
             lbLinesOut.Text = linesout.ToString();
             lbMatches.Text = matches.ToString();
             lbIgnored.Text = ignored.ToString();
@@ -650,7 +682,7 @@ namespace CountyChecker
                 try
                 {
                     int n = 0;
-                    int v = GetVisibileLineCount(tbRec);
+                    int v = GetVisibileLineCount(tbRec) - 1;
                     string line;
                     using StreamReader rdr = new(File.OpenRead(outFile));
                     while ((line = rdr.ReadLine()!) != null)
@@ -670,6 +702,10 @@ namespace CountyChecker
                 return;
             }
 
+            // Show count of males & females
+            tbRec.AppendText($"Males: {malesout}/{males}, Females: {femalesout}/{females}, Unknown: {unknownout}/{unknown}");
+
+            // MessageBox.Show($"Skipped: {skipped}");
 
             // Code to view output file if optViewOutput is true
             if (optViewOutput && File.Exists(outFile))
@@ -810,10 +846,6 @@ namespace CountyChecker
             ShowSettingsWindow();
         }
 
-        /*        private void ignoreListToolStripMenuItem_Click(object sender, EventArgs e)
-                {
-                }
-        */
         private void editIgnoreListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using IgnoreListWindow ignoreList = new() { KeyPreview = true };

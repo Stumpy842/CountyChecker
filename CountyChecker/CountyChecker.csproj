@@ -14,12 +14,12 @@
     <PackageIcon>CC.png</PackageIcon>
     <RepositoryUrl>https://github.com/Stumpy842/CountyChecker</RepositoryUrl>
     <PackageTags>CountyCheck</PackageTags>
-    <PackageReleaseNotes>Added Hotkeys</PackageReleaseNotes>
-    <Version>1.0.2</Version>
-    <VersionPrefix>1.0.2</VersionPrefix>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <InformationalVersion>1.0.2</InformationalVersion>
+    <PackageReleaseNotes>Recs Out incorrect when Ignore List enabled</PackageReleaseNotes>
+    <Version>1.0.3</Version>
+    <VersionPrefix>1.0.3</VersionPrefix>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <InformationalVersion>1.0.3</InformationalVersion>
     <Title>CountyChecker Report Generator</Title>
     <Copyright>© Steven J. Stover, 2025</Copyright>
   </PropertyGroup>

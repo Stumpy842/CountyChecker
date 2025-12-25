@@ -22,6 +22,12 @@ Delete output file on Cancel works now
 
 Minor corrections to UI (spelling etc)
 
+********** New Version 1.0.3.0 Release **********
+
+Added Tally of Males/Females to output Windows
+
+Bugfix: Recs Out incorrect when Ignore List enabled and matches found
+
 **Notes**
 
 CountyChecker is a Windows application which requires the .NET runtime and will not run natively on other platforms such as Mac OS or Linux. It may work with some crossover/emulator solution but this has not been tested.
