@@ -80,6 +80,7 @@ namespace CountyChecker
         // Ignore List
         private static List<string> IgnoreListItems = [];
         internal static bool optIgnoreEnabled;
+        internal static StringComparison optMatchCase;
 
         public Form1()
         {
@@ -122,6 +123,7 @@ namespace CountyChecker
         {
             IgnoreList.Load();
             IgnoreListItems = IgnoreList.CurrentIgnores.Ignore;
+            optMatchCase = IgnoreList.CurrentIgnores.MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
             optIgnoreEnabled = IgnoreList.CurrentIgnores.IgnoreEnabled;
             disableIgnoreListToolStripMenuItem.Text = optIgnoreEnabled ? "&Disable Ignore List" : "&Enable Ignore List";
         }
@@ -387,7 +389,7 @@ namespace CountyChecker
                 if (!optIgnoreEnabled) return false;
                 foreach (string ign in IgnoreListItems)
                 {
-                    if (line.Contains(ign))
+                    if (line.Contains(ign, optMatchCase))
                     {
                         return true;
                     }
@@ -406,6 +408,7 @@ namespace CountyChecker
                     if (File.Exists(outFile)) { File.Delete(outFile); }
                 }
                 catch { }
+
                 // Open the stream for reading. File.OpenRead opens the file with read-only access
                 // and a default FileShare.Read mode, allowing other processes to read simultaneously.
                 using StreamReader reader = new(File.OpenRead(inFile));

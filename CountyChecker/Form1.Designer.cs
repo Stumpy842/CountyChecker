@@ -298,7 +298,7 @@ namespace CountyChecker
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(129, 22);
+            openToolStripMenuItem.Size = new Size(180, 22);
             openToolStripMenuItem.Text = "&Open";
             openToolStripMenuItem.Click += btOpenFile_Click;
             // 
@@ -306,34 +306,34 @@ namespace CountyChecker
             // 
             ignoreListToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { editIgnoreListToolStripMenuItem, disableIgnoreListToolStripMenuItem });
             ignoreListToolStripMenuItem.Name = "ignoreListToolStripMenuItem";
-            ignoreListToolStripMenuItem.Size = new Size(129, 22);
+            ignoreListToolStripMenuItem.Size = new Size(180, 22);
             ignoreListToolStripMenuItem.Text = "&Ignore List";
             // 
             // editIgnoreListToolStripMenuItem
             // 
             editIgnoreListToolStripMenuItem.Name = "editIgnoreListToolStripMenuItem";
-            editIgnoreListToolStripMenuItem.Size = new Size(170, 22);
-            editIgnoreListToolStripMenuItem.Text = "&Edit Ignore List";
+            editIgnoreListToolStripMenuItem.Size = new Size(180, 22);
+            editIgnoreListToolStripMenuItem.Text = "Edit Ignore &List";
             editIgnoreListToolStripMenuItem.Click += editIgnoreListToolStripMenuItem_Click;
             // 
             // disableIgnoreListToolStripMenuItem
             // 
             disableIgnoreListToolStripMenuItem.Name = "disableIgnoreListToolStripMenuItem";
-            disableIgnoreListToolStripMenuItem.Size = new Size(170, 22);
+            disableIgnoreListToolStripMenuItem.Size = new Size(180, 22);
             disableIgnoreListToolStripMenuItem.Text = "&Disable Ignore List";
             disableIgnoreListToolStripMenuItem.Click += disableIgnoreListToolStripMenuItem_Click;
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(129, 22);
+            settingsToolStripMenuItem.Size = new Size(180, 22);
             settingsToolStripMenuItem.Text = "&Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(129, 22);
+            exitToolStripMenuItem.Size = new Size(180, 22);
             exitToolStripMenuItem.Text = "E&xit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 

@@ -49,6 +49,7 @@ namespace CountyChecker
             if (editing)
             {
                 CurrentIgnores.Ignore = [.. _ignoreListWindow!.lbxIgnore.Items.Cast<string>()];
+                CurrentIgnores.MatchCase = _ignoreListWindow.cbMatchCase.Checked;
             }
             CurrentIgnores.IgnoreEnabled = Form1.optIgnoreEnabled;
 
@@ -99,7 +100,11 @@ namespace CountyChecker
                     }
                 }
 
-                _ignoreListWindow?.lbxIgnore.Items.AddRange([.. CurrentIgnores.Ignore]);
+                if (_ignoreListWindow is not null)
+                {
+                    _ignoreListWindow.lbxIgnore.Items.AddRange([.. CurrentIgnores.Ignore.ToArray()]);
+                    _ignoreListWindow.cbMatchCase.Checked = CurrentIgnores.MatchCase;
+                }           
             }
         }
 
@@ -110,6 +115,7 @@ namespace CountyChecker
         {
             public List<string> Ignore { get; set; } = [];
             public bool IgnoreEnabled { get; set; } = true;
+            public bool MatchCase { get; set; } = true;
         }
     }
 }

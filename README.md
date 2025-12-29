@@ -28,6 +28,11 @@ Added Tally of Males/Females to output Windows
 
 Bugfix: Recs Out incorrect when Ignore List enabled and matches found
 
+********** New Version 1.0.4.0 Release **********
+
+Added Match Case to Ignore List
+Changed hotkey for Edit Ignore List
+
 **Notes**
 
 CountyChecker is a Windows application which requires the .NET runtime and will not run natively on other platforms such as Mac OS or Linux. It may work with some crossover/emulator solution but this has not been tested.

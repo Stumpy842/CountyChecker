@@ -52,6 +52,7 @@ namespace CountyChecker
             btCancel = new Button();
             lbxIgnore = new ListBoxEx();
             btEdit = new Button();
+            cbMatchCase = new CheckBox();
             SuspendLayout();
             // 
             // label1
@@ -134,11 +135,22 @@ namespace CountyChecker
             btEdit.UseVisualStyleBackColor = true;
             btEdit.Click += btEdit_Click;
             // 
+            // cbMatchCase
+            // 
+            cbMatchCase.AutoSize = true;
+            cbMatchCase.Location = new Point(372, 19);
+            cbMatchCase.Name = "cbMatchCase";
+            cbMatchCase.Size = new Size(88, 19);
+            cbMatchCase.TabIndex = 8;
+            cbMatchCase.Text = "Match Case";
+            cbMatchCase.UseVisualStyleBackColor = true;
+            // 
             // IgnoreListWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(624, 311);
+            Controls.Add(cbMatchCase);
             Controls.Add(btEdit);
             Controls.Add(lbxIgnore);
             Controls.Add(btCancel);
@@ -169,5 +181,6 @@ namespace CountyChecker
         private Button btCancel;
         internal ListBoxEx lbxIgnore;
         private Button btEdit;
+        internal CheckBox cbMatchCase;
     }
 }
